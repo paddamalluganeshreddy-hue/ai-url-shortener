@@ -10,6 +10,8 @@ mvn spring-boot:run
 
 The H2 console is at `http://localhost:8080/h2-console`. Use JDBC URL `jdbc:h2:mem:urlshortener` and user `sa`.
 
+Swagger UI is available at `http://localhost:8080/swagger-ui.html`; the raw OpenAPI document is served at `http://localhost:8080/api-docs`.
+
 ## API
 
 ```http
