@@ -4,6 +4,7 @@ import com.example.urlshortener.entity.ShortUrl;
 import com.example.urlshortener.service.DuplicateShortCodeException;
 import com.example.urlshortener.service.ShortUrlNotFoundException;
 import com.example.urlshortener.service.ShortUrlService;
+import com.example.urlshortener.service.InvalidOriginalUrlException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -36,6 +37,11 @@ public class ShortUrlController {
         return ShortUrlResponse.from(service.findByCode(shortCode));
     }
 
+    @GetMapping("/{shortCode}/analytics")
+    public AnalyticsResponse analytics(@PathVariable String shortCode) {
+        return new AnalyticsResponse(shortCode, service.accessCount(shortCode));
+    }
+
     @PostMapping
     public ResponseEntity<ShortUrlResponse> create(@Valid @RequestBody CreateShortUrlRequest request) {
         ShortUrl created = service.create(request.shortCode(), request.originalUrl());
@@ -53,6 +59,11 @@ public class ShortUrlController {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiError(exception.getMessage()));
     }
 
+    @ExceptionHandler(InvalidOriginalUrlException.class)
+    public ResponseEntity<ApiError> handleInvalidUrl(InvalidOriginalUrlException exception) {
+        return ResponseEntity.badRequest().body(new ApiError(exception.getMessage()));
+    }
+
     public record CreateShortUrlRequest(
         @NotBlank @Size(max = 32) @Pattern(regexp = "[A-Za-z0-9_-]+") String shortCode,
         @NotBlank @Size(max = 2048) String originalUrl) { }
@@ -60,4 +71,5 @@ public class ShortUrlController {
         static ShortUrlResponse from(ShortUrl item) { return new ShortUrlResponse(item.getId(), item.getShortCode(), item.getOriginalUrl()); }
     }
     public record ApiError(String message) { }
+    public record AnalyticsResponse(String shortCode, long redirectCount) { }
 }

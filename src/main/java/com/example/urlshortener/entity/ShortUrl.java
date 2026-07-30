@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.Instant;
 
 @Entity
 @Table(name = "short_urls")
@@ -21,15 +22,20 @@ public class ShortUrl {
     @Column(nullable = false, length = 2048)
     private String originalUrl;
 
+    @Column(nullable = false)
+    private Instant createdAt;
+
     protected ShortUrl() {
     }
 
     public ShortUrl(String shortCode, String originalUrl) {
         this.shortCode = shortCode;
         this.originalUrl = originalUrl;
+        this.createdAt = Instant.now();
     }
 
     public Long getId() { return id; }
     public String getShortCode() { return shortCode; }
     public String getOriginalUrl() { return originalUrl; }
+    public Instant getCreatedAt() { return createdAt; }
 }
