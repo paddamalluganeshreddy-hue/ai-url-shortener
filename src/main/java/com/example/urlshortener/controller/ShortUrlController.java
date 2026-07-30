@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/urls")
+@Tag(name = "URL management", description = "Create, retrieve, and analyse shortened URLs")
 public class ShortUrlController {
     private final ShortUrlService service;
     public ShortUrlController(ShortUrlService service) { this.service = service; }
